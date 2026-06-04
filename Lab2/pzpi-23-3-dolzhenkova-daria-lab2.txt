@@ -1,0 +1,620 @@
+Харківський національний університет радіоелектроніки
+
+Факультет комп’ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+
+
+ЗВІТ 
+до лабораторної роботи № 2 
+з дисципліни: «Архітектура програмного забезпечення» 
+на тему: «Мобільний застосунок»
+
+
+
+Виконала:                                                                                                             Перевірив:
+  ст. гр. ПЗПІ-23-3                                                                  ст. викладач кафедри ПІ
+Долженкова Дар'я                                                                Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+
+
+Харків 2026
+1 ІСТОРІЯ ЗМІН
+
+№	Дата	Версія звіту	Опис змін та виправлень
+1	20.05.2026	0.1	Початок роботи та створення розділів, вибору стеку
+2	25.05.2026	0.2	Розроблено діаграми та схеми
+3	30.05.2026	0.3	Додано код та висновки
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2 ЗАВДАННЯ
+
+Метою роботи є опанування основ розробки мобільних застосунків на базі Kotlin.
+Відповідно до завдання необхідно:
+1.	Розробити Android-застосунок (Kotlin).
+2.	Реалізувати асинхронні запити до Flask-сервера через Retrofit 2.
+3.	Інтегрувати модуль генерації QR-кодів (бібліотека ZXing) для відображення промокодів.
+4.	Розробити захищену адмін-панель з підтримкою CRUD-операцій у базі даних SQLite.
+5.	Скласти архітектурні UML-діаграми.
+6.	Викласти вихідний код проєкту у GitHub-репозиторій.
+7.	Записати відео демонстрації роботи застосунку та опублікувати на YouTube з акаунту @nure.ua.
+8.	Експорт документації: зберегти фінальний звіт у форматі PDF (для dl.nure.ua) та TXT UTF-8 (для GitHub).
+
+
+
+
+
+
+
+
+
+
+
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+Для реалізації мобільного клієнта системи «EmoAd» було використано мову розробки Kotlin та фреймворк інтерфейсу Jetpack Compose. Застосунок має головне вікно користувача та панель адміністратора.
+3.1 Стек технологій та інструменти розробки:
+-	Платформа: Android API 34 (Android 14).  
+-	Мова програмування: Kotlin (версія 1.9).  
+-	Інструмент збірки: Gradle.  
+-	Мережева взаємодія: бібліотека Retrofit 2 для побудови REST-клієнта та асинхронного виконання HTTP-запитів.
+-	Формат обміну даними: JSON (конвертер Gson).  
+-	Генерація контенту: бібліотека ZXing (BarcodeEncoder) для динамічного перетворення промокодів у графічні QR-коди.
+3.2 Структура та логіка роботи клієнтської частини:
+Користувацький інтерфейс складається з двох основних екранів:
+Головний екран: містить матрицю кнопок-емоджі для вибору настрою, відображення слогана та QR-код. 
+Панель адміністратора: інтерфейс із авторизацією за ПІН-кодом, який реалізує створення, перегляд таблиці, редагування та видалення записів реклами в базі даних SQLite бекенду.
+При натисканні користувачем на кнопку емоджі застосунок формує асинхронний POST-запит із JSON-тілом до центрального Flask-сервера за допомогою Retrofit. Отриманий у відповідь JSON-пакет розбирається конвертером Gson, після чого застосунок миттєво оновлює текстовий слоган на екрані та за допомогою модуля ZXing кодує текстовий промокод у QR-код. При додаванні, зміні чи видаленні реклами в адмін-панелі, застосунок надсилає відповідні HTTP-запити (POST, PUT, DELETE), після чого автоматично викликає функцію refreshAds() для миттєвого перемальовування таблиці актуальними даними з сервера.
+4 ВИСНОВКИ
+
+У результаті виконання лабораторної роботи №2 було:     
+-	розроблено мобільний застосунок «EmoAd» на Jetpack Compose (Kotlin), що реалізує інтерфейс вибору емоцій та захищену адмін-панель із CRUD-операціями;
+-	налагоджено клієнт-серверний обмін даними з Flask-сервером у форматі JSON за допомогою бібліотеки Retrofit 2;
+-	інтегровано модуль генерації QR-кодів через бібліотеку ZXing для динамічного кодування отриманих промокодів;
+-	візуалізовано архітектуру та логіку роботи системи за допомогою чотирьох UML-діаграм (прецедентів, компонент, діяльності та станів).
+Використання стеку Jetpack Compose, Retrofit 2 та БД SQLite дозволило створити швидкий інтерфейс, забезпечити стабільне збереження даних між сесіями та чітку взаємодію компонентів у реальному часі.
+
+
+
+
+
+
+
+
+
+
+
+
+
+5 ВИКОРИСТАННЯ ШІ ПІД ЧАС ВИКОНАННАЯ РОБОТИ
+
+1.	Проєктування архітектури та логіки станів 
+Промпт: «Я хочу зробити мобільний застосунок на Jetpack Compose та Flask. Застосунок має два меню: користувацький (вибір емоції, асинхронний запит через Retrofit, генерація QR-коду за допомогою ZXing, обробка помилок мережі) та адміністративне (вхід за ПІН-кодом, CRUD-операції в базі даних SQLite).
+Результат генерації ШІ: допоміг чітко розділити логіку застосунку на три стани для діаграми: початкове очікування в меню, клієнтську гілку (надсилання запиту через Retrofit - обробка відповіді та створення QR-коду через ZXing - показ акції) та адміністративну гілку (перевірка ПІН-коду - перехід до керування базою даних SQLite в реальному часі). 
+2.	Генерація UI-шаблону на Jetpack Compose (Single Activity)
+Промпт: «Згенеруй структуру головного екрана мобільного клієнта на Jetpack Compose мовою Kotlin. Необхідно реалізувати пастельний фон (колір #F1EAFF), адаптивну матрицю з 4 кнопок-емоджі (Веселий, Сумний, Втомлений, Злий) з однаковою вагою в рядах, текстове поле для виведення динамічного слогана та контейнер для відображення згенерованого Bitmap QR-коду. Організуй код у межах одного файлу MainActivity».
+Результат генерації ШІ: Базовий каркас функції @Composable fun MainScreen(), який використовує елементи Box, Column, Row та інструмент Modifier.weight(1f) для створення адаптивної сітки кнопок. Також згенеровано логіку умовного рендерингу екранів через змінну стану currentScreen ("main" / "admin").
+3.	Налаштування клієнт-серверної взаємодії через Retrofit 2
+Промпт: «Створи інтерфейси Retrofit 2 для зв'язку Android-клієнта з Flask-сервером. Потрібно реалізувати два сервіси: EmoAdApiService (для надсилання POST-запиту з емоцією користувача та отримання слогана й промокоду) та AdminApiService (для виконання повного циклу CRUD: GET для списку, POST для додавання, PUT для оновлення за ID та DELETE для видалення). Додай відповідні Data-класи для парсингу JSON через Gson».
+Результат генерації ШІ: Готові інтерфейси з HTTP-анотаціями та супутні моделі даних (AdResponse, AdItem, SimpleResponse) з підтримкою анотацій @SerializedName.
+4.	Оптимізація обробки даних на Flask-сервері (Синхронізація JSON)
+Промпт: «Мій Flask-сервер повертає помилку 404 під час обробки POST-запиту від мобільного додатка. Сервер очікує параметри з URL (request.args), а Retrofit надсилає дані в тілі запиту як JSON. Перепиши ендпоінт /api/get_ad на Python так, щоб він коректно приймав JSON-боді, синхронізуй назви ключів (slogan та promo_code) з Kotlin-моделями та забезпеч збереження змін у базі SQLite через conn.commit()».
+Результат генерації ШІ: Модифікований Python-код для Flask, який використовує метод request.get_json() замість request.args.get(). Впроваджено сортування ORDER BY RANDOM() LIMIT 1 для забезпечення видачі випадкової реклами, якщо в базі є кілька варіантів для однієї емоції, та додано обов'язкові виклики conn.commit() для синхронного збереження CRUD-операцій на диску.
+
+
+
+
+
+
+
+
+ДОДАТОК А
+Відеозапис
+
+Відеозапис презентації результатів лабораторної роботи: 
+https://www.youtube.com/watch?v=noQPsb7nGfY
+Хронологічний опис відеозапису 
+-	00:00 - Вітання 
+-	01:00 - Демонстрація застосунку "Головне меню користувача" 
+-	02:20 - Вхід у адміністративну панель 
+-	02:40 - Додавання нової пропозиції та демонстрація 
+-	03:28 - Зміна рекламної пропозиції та демонстрація 
+-	04:01 - Видалення непотрібного запису 
+-	04:20 - Огляд головних частин коду 
+-	07:38 - Перевірка HTTP запитів та оновлена таблиця БД 
+-	08:20 - Завершення огляду
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ДОДАТОК Б
+Виконані діаграми
+
+ 
+Рисунок Б.1 – Діаграма прецедентів (Use Case Diagram)
+
+ 
+Рисунок Б.2 – Діаграма компонент (Component Diagram)
+
+
+
+ 
+Рисунок Б.3 – Діаграма діяльності (Activity Diagram)
+ 
+Рисунок Б.4 – Діаграма станів (State Diagram)
+
+
+
+
+
+
+
+
+ДОДАТОК В
+
+1   package com.example.emoadmobile
+2   
+3   import android.graphics.Bitmap
+4   import android.os.Bundle
+5   import android.widget.Toast
+6   import androidx.activity.ComponentActivity
+7   import androidx.activity.compose.setContent
+8   import androidx.compose.foundation.Image
+9   import androidx.compose.foundation.background
+10  import androidx.compose.foundation.border
+11  import androidx.compose.foundation.layout.*
+12  import androidx.compose.foundation.lazy.LazyColumn
+13  import androidx.compose.foundation.lazy.items
+14  import androidx.compose.foundation.text.KeyboardOptions
+15  import androidx.compose.material.icons.Icons
+16  import androidx.compose.material.icons.filled.Delete
+17  import androidx.compose.material.icons.filled.Edit
+18  import androidx.compose.material3.*
+19  import androidx.compose.runtime.*
+20  import androidx.compose.ui.Alignment
+21  import androidx.compose.ui.Modifier
+22  import androidx.compose.ui.graphics.Color
+23  import androidx.compose.ui.graphics.asImageBitmap
+24  import androidx.compose.ui.platform.LocalContext
+25  import androidx.compose.ui.text.input.KeyboardType
+26  import androidx.compose.ui.text.input.PasswordVisualTransformation
+27  import androidx.compose.ui.text.style.TextAlign
+28  import androidx.compose.ui.unit.dp
+29  import androidx.compose.ui.unit.sp
+30  import com.google.gson.annotations.SerializedName
+31  import com.google.zxing.BarcodeFormat
+32  import com.journeyapps.barcodescanner.BarcodeEncoder
+33  import retrofit2.Call
+34  import retrofit2.Callback
+35  import retrofit2.Response
+36  import retrofit2.Retrofit
+37  import retrofit2.converter.gson.GsonConverterFactory
+38  import retrofit2.http.*
+39  
+40  class MainActivity : ComponentActivity() {
+41      override fun onCreate(savedInstanceState: Bundle?) {
+42          super.onCreate(savedInstanceState)
+43  
+44          val retrofit = Retrofit.Builder()
+45              .baseUrl("https://common-goats-sleep.loca.lt/")
+46              .addConverterFactory(GsonConverterFactory.create())
+47              .build()
+48  
+49          val apiService = retrofit.create(EmoAdApiService::class.java)
+50          val adminApiService = retrofit.create(AdminApiService::class.java)
+51  
+52          setContent {
+53              MaterialTheme {
+54                  var currentScreen by remember { mutableStateOf("main") }
+55  
+56                  if (currentScreen == "main") {
+57                      MainScreen(
+                        apiService = apiService,
+58                      onNavigateToAdmin = { currentScreen = "admin" }
+59                  )
+60              } else {
+61                  AdminScreen(
+                        adminApiService = adminApiService,
+62                      onBackToMenu = { currentScreen = "main" }
+63                  )
+64              }
+65          }
+66      }
+67  }
+68  }
+69  
+70  @Composable
+71  fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
+72      val context = LocalContext.current
+73      var slogan by remember { mutableStateOf("Оберіть емоцію, щоб отримати пропозицію") }
+74      var qrBitmap by remember { mutableStateOf<Bitmap?>(null) }
+75      var showDialog by remember { mutableStateOf(false) }
+76      var pinCode by remember { mutableStateOf("") }
+77  
+78      Box(
+79          modifier = Modifier
+80              .fillMaxSize()
+81              .background(Color(0xFFF1EAFF))
+82      ) {
+83          Column(
+84              modifier = Modifier
+85                  .fillMaxSize()
+86                  .padding(20.dp),
+87              horizontalAlignment = Alignment.CenterHorizontally,
+88              verticalArrangement = Arrangement.SpaceBetween
+89          ) {
+90              Column(horizontalAlignment = Alignment.CenterHorizontally) {
+91                  Text(
+92                      text = "Який у вас настрій? (EmoAd)",
+93                      fontSize = 24.sp,
+94                      modifier = Modifier.padding(top = 20.dp, bottom = 40.dp)
+95                  )
+96  
+97                  Column(
+98                      modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+99                      verticalArrangement = Arrangement.spacedBy(12.dp)
+100                 ) {
+101                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+102                         Button(
+103                             onClick = { sendEmotion("happy", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+104                             modifier = Modifier.weight(1f),
+105                             contentPadding = PaddingValues(vertical = 16.dp)
+106                         ) {
+107                             Text("😊 Веселий", fontSize = 18.sp)
+108                         }
+109                         Button(
+110                             onClick = { sendEmotion("sad", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+111                             modifier = Modifier.weight(1f),
+112                             contentPadding = PaddingValues(vertical = 16.dp)
+113                         ) {
+114                             Text("😔 Сумний", fontSize = 18.sp)
+115                         }
+116                     }
+117                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+118                         Button(
+119                             onClick = { sendEmotion("tired", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+120                             modifier = Modifier.weight(1f),
+121                             contentPadding = PaddingValues(vertical = 16.dp)
+122                         ) {
+123                             Text("🥱 Втомлений", fontSize = 18.sp)
+124                         }
+125                         Button(
+126                             onClick = { sendEmotion("angry", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+127                             modifier = Modifier.weight(1f),
+128                             contentPadding = PaddingValues(vertical = 16.dp)
+129                         ) {
+130                             Text("😡 Злий", fontSize = 18.sp)
+131                         }
+132                     }
+133                 }
+134 
+135                 Spacer(modifier = Modifier.height(40.dp))
+136                 HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outlineVariant)
+137                 Spacer(modifier = Modifier.height(30.dp))
+138 
+139                 Text(slogan, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 10.dp))
+140 
+141                 Spacer(modifier = Modifier.height(30.dp))
+142 
+143                 qrBitmap?.let {
+144                     Image(bitmap = it.asImageBitmap(), contentDescription = "QR Code", modifier = Modifier.size(220.dp))
+145                 }
+146             }
+147 
+148             Button(
+149                 onClick = { showDialog = true },
+150                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.DarkGray),
+151                 modifier = Modifier.padding(bottom = 10.dp)
+152             ) {
+153                 Text("Панель адміністратора", fontSize = 16.sp)
+154             }
+155         }
+156     }
+157 
+158     if (showDialog) {
+159         AlertDialog(
+160             onDismissRequest = { showDialog = false },
+161             title = { Text("Вхід в панель адміністратора") },
+162             text = {
+163                 OutlinedTextField(
+164                     value = pinCode,
+165                     onValueChange = { pinCode = it },
+166                     label = { Text("Введіть Pin-код") },
+167                     visualTransformation = PasswordVisualTransformation(),
+168                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+169                 )
+170             },
+171             confirmButton = {
+172                 Button(onClick = {
+173                     if (pinCode == "1234") {
+174                         showDialog = false
+175                         pinCode = ""
+176                         onNavigateToAdmin()
+177                     } else {
+178                         Toast.makeText(context, "Невірний пароль!", Toast.LENGTH_SHORT).show()
+179                     }
+180                 }) { Text("Увійти") }
+181             },
+182             dismissButton = { Button(onClick = { showDialog = false; pinCode = "" }) { Text("Скасувати") } }
+183         )
+184     }
+185 }
+186 
+187 @Composable
+188 fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
+189     val context = LocalContext.current
+190     var emotion by remember { mutableStateOf("") }
+191     var promoCode by remember { mutableStateOf("") }
+192     var slogan by remember { mutableStateOf("") }
+193 
+194     var adsList by remember { mutableStateOf(listOf<AdItem>()) }
+195     var editingAd by remember { mutableStateOf<AdItem?>(null) }
+196 
+197     fun refreshAds() {
+198         adminApiService.getAllAds().enqueue(object : Callback<List<AdItem>> {
+199             override fun onResponse(call: Call<List<AdItem>>, response: Response<List<AdItem>>) {
+200                 if (response.isSuccessful && response.body() != null) {
+201                     adsList = response.body()!!
+202                 }
+203             }
+204             override fun onFailure(call: Call<List<AdItem>>, t: Throwable) {
+205                 Toast.makeText(context, "Помилка оновлення таблиці", Toast.LENGTH_SHORT).show()
+206             }
+207         })
+208     }
+209 
+210     LaunchedEffect(Unit) { refreshAds() }
+211 
+212     Column(modifier = Modifier
+213         .fillMaxSize()
+214         .padding(15.dp)) {
+215         Text("Керування рекламою", fontSize = 20.sp, style = MaterialTheme.typography.titleMedium,
+216             modifier = Modifier.padding(bottom = 10.dp)
+217         )
+218 
+219         OutlinedTextField(value = emotion, onValueChange = { emotion = it }, label = { Text("Емоція (happy, sad, tired, angry)") }, modifier = Modifier
+220             .fillMaxWidth()
+221             .padding(bottom = 5.dp))
+222         OutlinedTextField(value = promoCode, onValueChange = { promoCode = it }, label = { Text("Промокод") }, modifier = Modifier
+223             .fillMaxWidth()
+224             .padding(bottom = 5.dp))
+225         OutlinedTextField(value = slogan, onValueChange = { slogan = it }, label = { Text("Слоган") }, modifier = Modifier
+226             .fillMaxWidth()
+227             .padding(bottom = 10.dp))
+228 
+229         Button(
+230             onClick = {
+231                 if (emotion.isBlank() || promoCode.isBlank() || slogan.isBlank()) {
+232                     Toast.makeText(context, "Заповніть усі поля!", Toast.LENGTH_SHORT).show()
+233                     return@Button
+234                 }
+235                 val request = NewAdRequest(emotion.trim().lowercase(), promoCode.trim(), slogan.trim())
+236                 adminApiService.addNewAd(request).enqueue(object : Callback<SimpleResponse> {
+237                     override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
+238                         if (response.isSuccessful) {
+239                             Toast.makeText(context, "Рекламу успешно додано!", Toast.LENGTH_SHORT).show()
+240                             emotion = ""; promoCode = ""; slogan = ""
+241                             refreshAds()
+242                         } else {
+243                             Toast.makeText(context, "Помилка сервера: ${response.code()}", Toast.LENGTH_SHORT).show()
+244                         }
+245                     }
+246                     override fun onFailure(call: Call<SimpleResponse>, t: Throwable) {
+247                         Toast.makeText(context, "Помилка зв'язку: ${t.message}", Toast.LENGTH_SHORT).show()
+248                     }
+249                 })
+250             },
+251             modifier = Modifier.fillMaxWidth()
+252         ) { Text("Додати нову рекламу") }
+253 
+254         Spacer(modifier = Modifier.height(15.dp))
+255         Text("База даних реклами:", fontSize = 14.sp, color = Color.Gray)
+256         Spacer(modifier = Modifier.height(5.dp))
+257 
+258         Box(modifier = Modifier
+259             .weight(1f)
+260             .border(1.dp, Color.LightGray)
+261             .background(Color(0xFFFAFAFA))) {
+262             LazyColumn(modifier = Modifier.fillMaxSize()) {
+263                 item {
+264                     Row(modifier = Modifier
+265                         .fillMaxWidth()
+266                         .background(Color.LightGray)
+267                         .padding(8.dp)) {
+268                         Text("ID/Емоція", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+269                         Text("Промокод/Слоган", modifier = Modifier.weight(2f), style = MaterialTheme.typography.bodyMedium)
+270                         Text("Дії", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+271                     }
+272                 }
+273                 items(adsList) { ad ->
+274                     Row(
+275                         modifier = Modifier
+276                             .fillMaxWidth()
+277                             .padding(8.dp),
+278                         verticalAlignment = Alignment.CenterVertically
+279                     ) {
+280                         Column(modifier = Modifier.weight(1f)) {
+281                             Text("#${ad.id}", fontSize = 11.sp, color = Color.Gray)
+282                             Text(ad.emotion, fontSize = 14.sp, style = MaterialTheme.typography.bodyLarge)
+283                         }
+284                         Column(modifier = Modifier.weight(2f)) {
+285                             Text(ad.promo_code, fontSize = 14.sp, style = MaterialTheme.typography.bodyLarge)
+286                             Text(ad.slogan, fontSize = 12.sp, color = Color.DarkGray)
+287                         }
+288                         Row(modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
+289                             IconButton(onClick = { editingAd = ad }) {
+290                                 Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.Blue)
+291                             }
+292                             IconButton(onClick = {
+293                                 adminApiService.deleteAd(ad.id).enqueue(object : Callback<SimpleResponse> {
+294                                     override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
+295                                         if (response.isSuccessful) {
+296                                             Toast.makeText(context, "Видалено з бази", Toast.LENGTH_SHORT).show()
+297                                             refreshAds()
+298                                         }
+299                                     }
+300                                     override fun onFailure(call: Call<SimpleResponse>, t: Throwable) {}
+301                                 })
+302                             }) {
+303                                 Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red)
+304                             }
+305                         }
+306                     }
+307                     HorizontalDivider(color = Color.LightGray, thickness = 0.5.dp)
+308                 }
+309             }
+310         }
+311 
+312         Spacer(modifier = Modifier.height(10.dp))
+313         Button(
+314             onClick = onBackToMenu,
+315             colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+316             modifier = Modifier.fillMaxWidth()
+317         ) { Text("Повернутися до головного меню") }
+318     }
+319 
+320     if (editingAd != null) {
+321         val ad = editingAd!!
+322         var editSlogan by remember { mutableStateOf(ad.slogan) }
+323         var editPromo by remember { mutableStateOf(ad.promo_code) }
+324 
+325         AlertDialog(
+326             onDismissRequest = { editingAd = null },
+327             title = { Text("Редагування запису #${ad.id}") },
+328             text = {
+329                 Column {
+330                     OutlinedTextField(value = editPromo, onValueChange = { editPromo = it }, label = { Text("Промокод") }, modifier = Modifier.padding(bottom = 5.dp))
+331                     OutlinedTextField(value = editSlogan, onValueChange = { editSlogan = it }, label = { Text("Слоган") })
+332                 }
+333             },
+334             confirmButton = {
+335                 Button(onClick = {
+336                     val request = UpdateAdRequest(editPromo.trim(), editSlogan.trim())
+337                     adminApiService.updateAd(ad.id, request).enqueue(object : Callback<SimpleResponse> {
+338                         override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
+339                             if (response.isSuccessful) {
+340                                 Toast.makeText(context, "Оновлено успішно!", Toast.LENGTH_SHORT).show()
+341                                 editingAd = null
+342                                 refreshAds()
+343                             }
+344                         }
+345                         override fun onFailure(call: Call<SimpleResponse>, t: Throwable) {}
+346                     })
+347                 }) { Text("Зберегти") }
+348             },
+349             dismissButton = { Button(onClick = { editingAd = null }) { Text("Скасувати") } }
+350         )
+351     }
+352 }
+353 
+354 private fun sendEmotion(emotion: String, apiService: EmoAdApiService, context: android.content.Context, onResult: (String, Bitmap?) -> Unit) {
+355     apiService.getAdByEmotion(EmotionRequest(emotion)).enqueue(object : Callback<AdResponse> {
+356         override fun onResponse(call: Call<AdResponse>, response: Response<AdResponse>) {
+357             if (response.isSuccessful && response.body() != null) {
+358                 val ad = response.body()!!
+359                 try {
+360                     val encoder = BarcodeEncoder()
+361                     val bitmap = encoder.encodeBitmap(ad.promo_code, BarcodeFormat.QR_CODE, 400, 400)
+362                     onResult(ad.slogan, bitmap)
+363                 } catch (e: Exception) { e.printStackTrace() }
+364             } else {
+365                 Toast.makeText(context, "Рекламу не знайдено", Toast.LENGTH_SHORT).show()
+366             }
+367         }
+368         override fun onFailure(call: Call<AdResponse>, t: Throwable) {
+369             Toast.makeText(context, "Помилка зв'язку з сервером", Toast.LENGTH_SHORT).show()
+370         }
+371     })
+372 }
+373 
+374 data class SimpleResponse(val message: String)
+375 
+376 data class EmotionRequest(
+377     val emotion: String,
+378     @SerializedName("client_type") val client_type: String = "mobile"
+379 )
+380 
+381 data class AdResponse(
+382     @SerializedName("promo_code") val promo_code: String,
+383     val slogan: String
+384 )
+385 
+386 data class NewAdRequest(
+387     val emotion: String,
+388     @SerializedName("promo_code") val promo_code: String,
+389     val slogan: String
+390 )
+391 
+392 data class UpdateAdRequest(
+393     @SerializedName("promo_code") val promo_code: String,
+394     val slogan: String
+395 )
+396 
+397 data class AdItem(
+398     val id: Int,
+399     val emotion: String,
+400     @SerializedName("promo_code") val promo_code: String,
+401     val slogan: String
+402 )
+403 
+404 interface EmoAdApiService {
+405     @POST("api/get_ad")
+406     fun getAdByEmotion(@Body request: EmotionRequest): Call<AdResponse>
+407 }
+408 
+409 interface AdminApiService {
+410     @GET("api/admin/ads")
+411     fun getAllAds(): Call<List<AdItem>>
+412 
+413     @POST("api/admin/add_ad")
+414     fun addNewAd(@Body request: NewAdRequest): Call<SimpleResponse>
+415 
+416     @PUT("api/admin/update_ad/{id}")
+417     fun updateAd(@Path("id") id: Int, @Body request: UpdateAdRequest): Call<SimpleResponse>
+418 
+419     @DELETE("api/admin/delete_ad/{id}")
+420     fun deleteAd(@Path("id") id: Int): Call<SimpleResponse>
+421 }
+

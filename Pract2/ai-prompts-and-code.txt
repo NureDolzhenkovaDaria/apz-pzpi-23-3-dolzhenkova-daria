@@ -1,0 +1,29 @@
+Запит до сервісу ШІ (Prompt):
+Напиши простий код для розуміння: Java Spring Boot контролер та Hibernate сутність (entity) для збереження метаданих дизайну (id, title, user_id). 
+Фрагмент програмного коду:
+
+1  package ua.canva;
+2  
+3  import jakarta.persistence.*;
+4  import org.springframework.web.bind.annotation.*;
+5  
+6  @Entity
+7  @Table(name = "designs")
+8  class Design {
+9      @Id 
+10     @GeneratedValue(strategy = GenerationType.IDENTITY) 
+11     public Long id;
+12     public String title;
+13     public String userId;
+14 }
+15 
+16 @RestController
+17 @RequestMapping("/api/designs")
+18 public class DesignController {
+19 
+20     @PostMapping("/save")
+21     public String save(@RequestBody Design design) {
+22         if (design.userId == null) return "Error: Invalid User";
+23         return "Saved successfully with ID: " + design.id;
+24     }
+25 }

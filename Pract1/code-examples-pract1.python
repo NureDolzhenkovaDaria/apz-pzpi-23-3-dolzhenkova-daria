@@ -1,0 +1,32 @@
+1  class UIComponent:
+2      def draw(self) -> str:
+3          pass
+4  
+5  class BaseShape(UIComponent):
+6      def draw(self) -> str:
+7          return "Базова фігура (Rectangle)"
+8  
+9  class UIComponentDecorator(UIComponent):
+10      def __init__(self, component: UIComponent):
+11          self._component = component
+12  
+13      def draw(self) -> str:
+14          return self._component.draw()
+15  
+16  class DropShadowDecorator(UIComponentDecorator):
+17      def draw(self) -> str:
+18          return f"Тінь({self._component.draw()})"
+19  
+20  class StrokeDecorator(UIComponentDecorator):
+21      def draw(self) -> str:
+22          return f"Обводка({self._component.draw()})"
+23  
+24  if __name__ == "__main__":
+25      shape = BaseShape()
+26      print("Робота з простим компонентом:")
+27      print(f"Результат: {shape.draw()}\n")
+28  
+29      decorator1 = DropShadowDecorator(shape)
+30      decorator2 = StrokeDecorator(decorator1)
+31      print("Робота з декорованим компонентом:")
+32      print(f"Результат: {decorator2.draw()}")
