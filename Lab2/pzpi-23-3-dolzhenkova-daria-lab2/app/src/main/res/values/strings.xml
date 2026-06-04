@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EmoAd Mobile</string>
+    <string name="app_title">Який у вас настрій? (EmoAd)</string>
+    <string name="btn_happy">😊 Веселий</string>
+    <string name="btn_sad">😔 Сумний</string>
+    <string name="btn_tired">🥱 Втомлений</string>
+    <string name="btn_angry">😡 Злий</string>
+    <string name="btn_admin">Панель адміністратора</string>
+    <string name="admin_title">Вхід в панель адміністратора</string>
+    <string name="admin_label">Введіть Pin-код</string>
+    <string name="btn_login">Увійти</string>
+    <string name="btn_cancel">Скасувати</string>
+    <string name="admin_screen_title">Керування рекламою</string>
+    <string name="btn_back">Повернутися до головного меню</string>
+</resources>

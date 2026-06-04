@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EmoAd Mobile</string>
+    <string name="app_title">What is your mood? (EmoAd)</string>
+    <string name="btn_happy">😊 Happy</string>
+    <string name="btn_sad">😔 Sad</string>
+    <string name="btn_tired">🥱 Tired</string>
+    <string name="btn_angry">😡 Angry</string>
+    <string name="btn_admin">Admin Panel</string>
+    <string name="admin_title">Admin Panel Login</string>
+    <string name="admin_label">Enter PIN code</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="admin_screen_title">Ad Management</string>
+    <string name="btn_back">Back to Main Menu</string>
+</resources>
