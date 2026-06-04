@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +74,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
     val context = LocalContext.current
-    var slogan by remember { mutableStateOf("Оберіть емоцію, щоб отримати пропозицію") }
+    val configuration = LocalConfiguration.current
+
+    val isUk = configuration.locales[0].language == "uk"
+
+    var slogan by remember {
+        mutableStateOf(if (isUk) "Оберіть емоцію, щоб отримати пропозицію" else "Select an emotion to get a proposal")
+    }
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     var pinCode by remember { mutableStateOf("") }
@@ -91,7 +99,7 @@ fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Який у вас настрій? (EmoAd)",
+                    text = stringResource(R.string.app_title),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(top = 20.dp, bottom = 40.dp)
                 )
@@ -102,34 +110,34 @@ fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
                 ) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         Button(
-                            onClick = { sendEmotion("happy", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+                            onClick = { sendEmotion("happy", apiService, isUk, context) { s, b -> slogan = s; qrBitmap = b } },
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            Text("😊 Веселий", fontSize = 18.sp)
+                            Text(stringResource(R.string.btn_happy), fontSize = 18.sp)
                         }
                         Button(
-                            onClick = { sendEmotion("sad", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+                            onClick = { sendEmotion("sad", apiService, isUk, context) { s, b -> slogan = s; qrBitmap = b } },
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            Text("😔 Сумний", fontSize = 18.sp)
+                            Text(stringResource(R.string.btn_sad), fontSize = 18.sp)
                         }
                     }
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         Button(
-                            onClick = { sendEmotion("tired", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+                            onClick = { sendEmotion("tired", apiService, isUk, context) { s, b -> slogan = s; qrBitmap = b } },
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            Text("🥱 Втомлений", fontSize = 18.sp)
+                            Text(stringResource(R.string.btn_tired), fontSize = 18.sp)
                         }
                         Button(
-                            onClick = { sendEmotion("angry", apiService, context) { s, b -> slogan = s; qrBitmap = b } },
+                            onClick = { sendEmotion("angry", apiService, isUk, context) { s, b -> slogan = s; qrBitmap = b } },
                             modifier = Modifier.weight(1f),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            Text("😡 Злий", fontSize = 18.sp)
+                            Text(stringResource(R.string.btn_angry), fontSize = 18.sp)
                         }
                     }
                 }
@@ -152,20 +160,22 @@ fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.DarkGray),
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                Text("Панель адміністратора", fontSize = 16.sp)
+                Text(stringResource(R.string.btn_admin), fontSize = 16.sp)
             }
         }
     }
 
     if (showDialog) {
+        val wrongPasswordMessage = if (isUk) "Невірний пароль!" else "Incorrect password!"
+
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Вхід в панель адміністратора") },
+            title = { Text(stringResource(R.string.admin_title)) },
             text = {
                 OutlinedTextField(
                     value = pinCode,
                     onValueChange = { pinCode = it },
-                    label = { Text("Введіть Pin-код") },
+                    label = { Text(stringResource(R.string.admin_label)) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -177,11 +187,11 @@ fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
                         pinCode = ""
                         onNavigateToAdmin()
                     } else {
-                        Toast.makeText(context, "Невірний пароль!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, wrongPasswordMessage, Toast.LENGTH_SHORT).show()
                     }
-                }) { Text("Увійти") }
+                }) { Text(stringResource(R.string.btn_login)) }
             },
-            dismissButton = { Button(onClick = { showDialog = false; pinCode = "" }) { Text("Скасувати") } }
+            dismissButton = { Button(onClick = { showDialog = false; pinCode = "" }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 }
@@ -189,12 +199,23 @@ fun MainScreen(apiService: EmoAdApiService, onNavigateToAdmin: () -> Unit) {
 @Composable
 fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val isUk = configuration.locales[0].language == "uk"
+
     var emotion by remember { mutableStateOf("") }
     var promoCode by remember { mutableStateOf("") }
     var slogan by remember { mutableStateOf("") }
 
     var adsList by remember { mutableStateOf(listOf<AdItem>()) }
     var editingAd by remember { mutableStateOf<AdItem?>(null) }
+
+    val errorRefresh = if (isUk) "Помилка оновлення таблиці" else "Error updating table"
+    val emptyFields = if (isUk) "Заповніть усі поля!" else "Fill in all fields!"
+    val successAdd = if (isUk) "Рекламу успішно додано!" else "Ad successfully added!"
+    val errorServer = if (isUk) "Помилка сервера" else "Server error"
+    val errorConnection = if (isUk) "Помилка зв'язку" else "Connection error"
+    val successDelete = if (isUk) "Видалено з бази" else "Deleted from database"
+    val successUpdate = if (isUk) "Оновлено успішно!" else "Updated successfully!"
 
     fun refreshAds() {
         adminApiService.getAllAds().enqueue(object : Callback<List<AdItem>> {
@@ -204,7 +225,7 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
                 }
             }
             override fun onFailure(call: Call<List<AdItem>>, t: Throwable) {
-                Toast.makeText(context, "Помилка оновлення таблиці", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, errorRefresh, Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -214,47 +235,56 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(15.dp)) {
-        Text("Керування рекламою", fontSize = 20.sp, style = MaterialTheme.typography.titleMedium,
+        Text(stringResource(R.string.admin_screen_title), fontSize = 20.sp, style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 10.dp)
         )
 
-        OutlinedTextField(value = emotion, onValueChange = { emotion = it }, label = { Text("Емоція (happy, sad, tired, angry)") }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 5.dp))
-        OutlinedTextField(value = promoCode, onValueChange = { promoCode = it }, label = { Text("Промокод") }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 5.dp))
-        OutlinedTextField(value = slogan, onValueChange = { slogan = it }, label = { Text("Слоган") }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp))
+        OutlinedTextField(
+            value = emotion,
+            onValueChange = { emotion = it },
+            label = { Text(if (isUk) "Емоція (happy, sad, tired, angry)" else "Emotion (happy, sad, tired, angry)") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp)
+        )
+        OutlinedTextField(
+            value = promoCode,
+            onValueChange = { promoCode = it },
+            label = { Text(if (isUk) "Промокод" else "Promo code") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp)
+        )
+        OutlinedTextField(
+            value = slogan,
+            onValueChange = { slogan = it },
+            label = { Text(if (isUk) "Слоган" else "Slogan") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
+        )
 
         Button(
             onClick = {
                 if (emotion.isBlank() || promoCode.isBlank() || slogan.isBlank()) {
-                    Toast.makeText(context, "Заповніть усі поля!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, emptyFields, Toast.LENGTH_SHORT).show()
                     return@Button
                 }
                 val request = NewAdRequest(emotion.trim().lowercase(), promoCode.trim(), slogan.trim())
                 adminApiService.addNewAd(request).enqueue(object : Callback<SimpleResponse> {
                     override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
                         if (response.isSuccessful) {
-                            Toast.makeText(context, "Рекламу успішно додано!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, successAdd, Toast.LENGTH_SHORT).show()
                             emotion = ""; promoCode = ""; slogan = ""
                             refreshAds()
                         } else {
-                            Toast.makeText(context, "Помилка сервера: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "$errorServer: ${response.code()}", Toast.LENGTH_SHORT).show()
                         }
                     }
                     override fun onFailure(call: Call<SimpleResponse>, t: Throwable) {
-                        Toast.makeText(context, "Помилка зв'язку: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "$errorConnection: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
             },
             modifier = Modifier.fillMaxWidth()
-        ) { Text("Додати нову рекламу") }
+        ) { Text(if (isUk) "Додати нову рекламу" else "Add new advertisement") }
 
         Spacer(modifier = Modifier.height(15.dp))
-        Text("База даних реклами:", fontSize = 14.sp, color = Color.Gray)
+        Text(if (isUk) "База даних реклами:" else "Ad database:", fontSize = 14.sp, color = Color.Gray)
         Spacer(modifier = Modifier.height(5.dp))
 
         Box(modifier = Modifier
@@ -267,9 +297,9 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
                         .fillMaxWidth()
                         .background(Color.LightGray)
                         .padding(8.dp)) {
-                        Text("ID/Емоція", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                        Text("Промокод/Слоган", modifier = Modifier.weight(2f), style = MaterialTheme.typography.bodyMedium)
-                        Text("Дії", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+                        Text(if (isUk) "ID/Емоція" else "ID/Emotion", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                        Text(if (isUk) "Промокод/Слоган" else "Promo/Slogan", modifier = Modifier.weight(2f), style = MaterialTheme.typography.bodyMedium)
+                        Text(if (isUk) "Дії" else "Actions", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
                     }
                 }
                 items(adsList) { ad ->
@@ -295,7 +325,7 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
                                 adminApiService.deleteAd(ad.id).enqueue(object : Callback<SimpleResponse> {
                                     override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
                                         if (response.isSuccessful) {
-                                            Toast.makeText(context, "Видалено з бази", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, successDelete, Toast.LENGTH_SHORT).show()
                                             refreshAds()
                                         }
                                     }
@@ -316,7 +346,7 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
             onClick = onBackToMenu,
             colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
             modifier = Modifier.fillMaxWidth()
-        ) { Text("Повернутися до головного меню") }
+        ) { Text(stringResource(R.string.btn_back)) }
     }
 
     if (editingAd != null) {
@@ -326,11 +356,11 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
 
         AlertDialog(
             onDismissRequest = { editingAd = null },
-            title = { Text("Редагування запису #${ad.id}") },
+            title = { Text(if (isUk) "Редагування запису #${ad.id}" else "Editing record #${ad.id}") },
             text = {
                 Column {
-                    OutlinedTextField(value = editPromo, onValueChange = { editPromo = it }, label = { Text("Промокод") }, modifier = Modifier.padding(bottom = 5.dp))
-                    OutlinedTextField(value = editSlogan, onValueChange = { editSlogan = it }, label = { Text("Слоган") })
+                    OutlinedTextField(value = editPromo, onValueChange = { editPromo = it }, label = { Text(if (isUk) "Промокод" else "Promo code") }, modifier = Modifier.padding(bottom = 5.dp))
+                    OutlinedTextField(value = editSlogan, onValueChange = { editSlogan = it }, label = { Text(if (isUk) "Слоган" else "Slogan") })
                 }
             },
             confirmButton = {
@@ -339,21 +369,24 @@ fun AdminScreen(adminApiService: AdminApiService, onBackToMenu: () -> Unit) {
                     adminApiService.updateAd(ad.id, request).enqueue(object : Callback<SimpleResponse> {
                         override fun onResponse(call: Call<SimpleResponse>, response: Response<SimpleResponse>) {
                             if (response.isSuccessful) {
-                                Toast.makeText(context, "Оновлено успішно!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, successUpdate, Toast.LENGTH_SHORT).show()
                                 editingAd = null
                                 refreshAds()
                             }
                         }
                         override fun onFailure(call: Call<SimpleResponse>, t: Throwable) {}
                     })
-                }) { Text("Зберегти") }
+                }) { Text(if (isUk) "Зберегти" else "Save") }
             },
-            dismissButton = { Button(onClick = { editingAd = null }) { Text("Скасувати") } }
+            dismissButton = { Button(onClick = { editingAd = null }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 }
 
-private fun sendEmotion(emotion: String, apiService: EmoAdApiService, context: android.content.Context, onResult: (String, Bitmap?) -> Unit) {
+private fun sendEmotion(emotion: String, apiService: EmoAdApiService, isUk: Boolean, context: android.content.Context, onResult: (String, Bitmap?) -> Unit) {
+    val adNotFound = if (isUk) "Рекламу не знайдено" else "Ad not found"
+    val connectionError = if (isUk) "Помилка зв'язку з сервером" else "Server connection error"
+
     apiService.getAdByEmotion(EmotionRequest(emotion)).enqueue(object : Callback<AdResponse> {
         override fun onResponse(call: Call<AdResponse>, response: Response<AdResponse>) {
             if (response.isSuccessful && response.body() != null) {
@@ -364,11 +397,11 @@ private fun sendEmotion(emotion: String, apiService: EmoAdApiService, context: a
                     onResult(ad.slogan, bitmap)
                 } catch (e: Exception) { e.printStackTrace() }
             } else {
-                Toast.makeText(context, "Рекламу не знайдено", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, adNotFound, Toast.LENGTH_SHORT).show()
             }
         }
         override fun onFailure(call: Call<AdResponse>, t: Throwable) {
-            Toast.makeText(context, "Помилка зв'язку з сервером", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, connectionError, Toast.LENGTH_SHORT).show()
         }
     })
 }
