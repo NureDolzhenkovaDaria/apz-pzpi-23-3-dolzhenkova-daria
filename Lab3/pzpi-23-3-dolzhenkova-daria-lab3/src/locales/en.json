@@ -1,0 +1,33 @@
+{
+  "terminal_title": "Smart Ad Emotion System",
+  "admin_title": "Smart Ad Admin Panel",
+  "welcome_title": "Welcome to the ad terminal of the future",
+  "why_important": "Why is this important?",
+  "gdpr_text": "Our system analyzes your current emotional state to provide the most relevant proposals without violating confidentiality and GDPR regulations.",
+  "how_feel": "How do you feel right now?",
+  "select_emotion": "Select an emotion to see the magic...",
+  "source_external": "Generated promo code for discount",
+  "back_to_terminal": "← Back to Terminal",
+  "ad_management": "Ad Management",
+  "target_emotion": "Consumer Target Emotion:",
+  "ad_url": "Promo Code (Text or URL for QR):",
+  "ad_text": "Advertising Slogan (Call to Action):",
+  "save_db": "Save to Database",
+  "export_data": "Export Data (JSON)",
+  "import_data": "Import Data",
+"btn_happy": "😊 Happy",
+  "btn_sad": "😔 Sad",
+  "btn_tired": "🥱 Tired",
+  "btn_angry": "😡 Angry",
+  "emotions": {
+    "happy": "😊 Happy",
+    "sad": "😔 Sad",
+    "tired": "🥱 Tired",
+    "angry": "😡 Angry"
+  },
+  "admin_login_title": "Admin Panel Login",
+  "login_label": "Login:",
+  "password_label": "Password:",
+  "login_btn": "Login",
+  "wrong_credentials": "Invalid login or password!"
+}

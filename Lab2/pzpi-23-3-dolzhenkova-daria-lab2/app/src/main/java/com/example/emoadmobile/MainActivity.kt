@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://fast-zebras-shave.loca.lt/")
+            .baseUrl("https://dirty-dodos-spend.loca.lt/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
